@@ -1,17 +1,11 @@
 package com.tcs.BankingSystem.bean;
 
+import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
+import lombok.*;
 import java.util.List;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotEmpty;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
 @Data
@@ -22,25 +16,27 @@ public class Employee {
     @Id @GeneratedValue
     private Long id;
 
-    @Column
-    @NotEmpty
+    @Column(nullable=false, unique=true)
+    @NotEmpty(message = "Username cannot be empty")
     private String username;
 
-    @Column
+    @NotEmpty(message = "Password cannot be empty")
     private String password;
-    
-    @Column
+
+    @Email(message = "Email should be valid")
+    @NotEmpty(message = "Email cannot be empty")
     private String email;
-    
-    @Column
+
+    @NotEmpty(message = "Full name cannot be empty")
     private String fullName;
-    
-    @Column
+
+    @NotEmpty(message = "Department cannot be empty")
     private String department;
 
-    @Column
-    private String role; // "ADMIN" or "EMPLOYEE"
+    @NotEmpty(message = "Role cannot be empty")
+    private String role; // ADMIN or EMPLOYEE
 
-    @OneToMany(mappedBy = "employee")
+    @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL)
+    @JsonBackReference
     private List<Loan> processedLoans;
 }

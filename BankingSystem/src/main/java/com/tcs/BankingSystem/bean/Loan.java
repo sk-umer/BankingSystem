@@ -1,12 +1,15 @@
 package com.tcs.BankingSystem.bean;
 
-import jakarta.persistence.Column;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,30 +18,33 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name="loan")
+@Table(name = "loan")
 public class Loan {
-    @Id @GeneratedValue
-    private Long id;
+	@Id
+	@GeneratedValue
+	private Long id;
 
-    @Column
-    @Min(value =0)
-    private Double amount;
-    
-    @Column
-    private String type; // HOME, CAR, PERSONAL
-    
-    @Column
-    private Integer durationMonths;
-    
-    @Column
-    private String status = "PENDING"; // PENDING, APPROVED, REJECTED
-    
-    @Column
-    private String remarks;
+	@NotNull(message = "Loan amount cannot be null")
+	@Min(value = 1, message = "Loan amount must be greater than 0")
+	private Double amount;
 
-    @ManyToOne
-    private Customer customer;
+	@NotEmpty(message = "Loan type cannot be empty")
+	private String type; // HOME, CAR, PERSONAL
 
-    @ManyToOne
-    private Employee employee; // approver/rejector
+	@NotNull(message = "Duration cannot be null")
+	@Min(value = 1, message = "Duration must be at least 1 month")
+	private Integer durationMonths;
+
+	@NotEmpty(message = "Status cannot be empty")
+	private String status = "PENDING"; // PENDING, APPROVED, REJECTED
+
+	private String remarks;
+
+	@ManyToOne
+	@JsonManagedReference
+	private Customer customer;
+
+	@ManyToOne
+	@JsonManagedReference
+	private Employee employee; // approver/rejector
 }
